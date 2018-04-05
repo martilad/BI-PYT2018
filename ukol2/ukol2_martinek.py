@@ -46,6 +46,9 @@ class Browns_move:
             self.speed = 1
         self.window = [[0 for x in range(int(cols))] for y in range(int(rows))]
 
+    def __del__(self):
+        print('\033[?25h')
+
     """Start brown move on given position."""
     def start(self, row, col):
         if row < 5 or row > int(self.rows)-5 or col < 5 or col > int(self.cols)-5:
@@ -157,6 +160,9 @@ class Browns_read:
         sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=a, cols=b))
         self.window = [[0 for x in range(int(a)+1)] for y in range(int(b)+1)]
         self.clean()
+
+    def __del__(self):
+        print('\033[?25h')
 
     """Cleand terminal."""
     def clean(self):
