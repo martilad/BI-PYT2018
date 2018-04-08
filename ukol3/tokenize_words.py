@@ -36,7 +36,7 @@ class Tokenize_words:
                 if len(word) >= length:
                     return jumped, word
                 jumped += len(word)
-        return None
+        return None, None
 
     def next_token(self):
         token = self.list_of_tokens[self.position]
@@ -44,6 +44,12 @@ class Tokenize_words:
         if self.position == self.length:
             self.position = 0
         return token
+
+    def get_position(self):
+        return self.position
+
+    def get_len_list_tokens(self):
+        return len(self.list_of_tokens)
 
     def set_start(self):
         self.position = 0
