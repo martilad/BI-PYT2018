@@ -1,5 +1,6 @@
 from bidict import bidict
 
+"""Create bidirectional dictionary with alphabet to numbers."""
 def create_bidict_for_alphabet():
     alphabet = "abcdefghijklmnopqrstuvwxyz"
     bialpha = bidict()
@@ -7,9 +8,10 @@ def create_bidict_for_alphabet():
         bialpha[i] = j
     return bialpha
 
-
+"""Get input file to toneks words and other characters."""
 class Tokenize_words:
-    
+
+    """Init load tokent in list. Can be buffered TO DO maybe :D."""
     def __init__(self, file):
         dic_num = create_bidict_for_alphabet()
         self.list_of_tokens = []
@@ -28,6 +30,7 @@ class Tokenize_words:
         self.position = 0
         self.length = len(self.list_of_tokens)
 
+    """Return nex word with specific length."""
     def next_word(self, length=0):
         jumped = 0
         for i in range(self.length):
@@ -38,6 +41,7 @@ class Tokenize_words:
                 jumped += len(word)
         return None, None
 
+    """Return next token in file."""
     def next_token(self):
         token = self.list_of_tokens[self.position]
         self.position += 1
@@ -45,15 +49,19 @@ class Tokenize_words:
             self.position = 0
         return token
 
+    """Return position in tokens."""
     def get_position(self):
         return self.position
 
+    """Return number of tokens."""
     def get_len_list_tokens(self):
         return len(self.list_of_tokens)
 
+    """Seek on strat in tokens."""
     def set_start(self):
         self.position = 0
 
+"""Reprezent all special character tokens."""
 class OtherToken:
 
     def __init__(self, token):
@@ -65,5 +73,6 @@ class OtherToken:
     def __len__(self):
         return len(self.token)
 
+    """Return string token."""
     def get_token(self):
         return self.token

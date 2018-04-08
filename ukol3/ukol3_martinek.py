@@ -3,12 +3,15 @@ from tokenize_words import Tokenize_words
 from tokenize_words import create_bidict_for_alphabet
 import time
 
-
+"""Iterator for easy way to move in word for decryption."""
 class PhaseIterator:
+
     def __init__(self, phase):
         self.phase = phase
         self.length = len(phase)
         self.position = 0
+
+    """Return next letter for decrypt."""
     def next(self):
         letter = self.phase[self.position]
         self.position += 1
@@ -16,14 +19,18 @@ class PhaseIterator:
             self.position = 0
         return letter
 
+    """Jump to specific position."""
     def jump(self, length):
         self.position = (self.position + length) % self.length
 
+    """Set to start."""
     def set_start(self):
         self.position = 0
 
-
+"""Class for decrypt input text file, list of words, dictionary of language"""
 class Decrypt:
+
+    """Init all files and create dictionaries."""
     def __init__(self, text_file, word_passwords_file, output_file, words_check):
         try:
             self.text = open(text_file, "r")
@@ -51,15 +58,13 @@ class Decrypt:
             for word in word_list:
                 self.word_list[word[:-1].lower()] = True
 
-
-
     def __del__(self):
         self.text.close()
         self.words.close()
         if self.FLAG_out_file:
             self.output_file.close()
 
-
+    """Do decryption. Mastered. Check word with specific length and if only one phase good return."""
     def decrypt(self):
         word_length = 3
         try_words = 1
@@ -91,13 +96,15 @@ class Decrypt:
                 print("Bad road :D")
                 return False
             self.words.seek(0)
-            
+        
+    """Decrypt one word with password it iterator."""    
     def decrypt_one_word(self, word, phase_it):
         to_back = ""
         for i in word:
             to_back += self.dic_num[(self.dic_num.inv[i]-self.dic_num.inv[phase_it.next()])%26]
         return to_back
 
+    """Decprypt all with get one password."""
     def decrypt_allit(self, phase):
         self.text.seek(0)
         tokens = Tokenize_words(self.text)
@@ -112,6 +119,7 @@ class Decrypt:
         if not self.FLAG_out_file:
             print()
 
+    """Print it to file if is specific or to terminal."""
     def write_on(self, message):
         if self.FLAG_out_file:
             self.output_file.write(str(message))
@@ -119,13 +127,11 @@ class Decrypt:
             print(message, sep='', end='')
 
 cas = time.time()
-
 parser=argparse.ArgumentParser("Encryptor for Viegeners cipher")
 parser.add_argument("-t", help='File with text for decrypt.', required=True)
 parser.add_argument("-w", help='File with words to decrypt.', required=True)
 parser.add_argument("-c", help='File with check words for language to stop decrypting.', required=True)
 parser.add_argument("-o", help='If defined decrypted text will be print to files', default="-1")
-
 args = parser.parse_args()
 decrypt = Decrypt(text_file=args.t, word_passwords_file=args.w, output_file=args.o, words_check=args.c)
 if decrypt.decrypt():
