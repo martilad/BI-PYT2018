@@ -14,7 +14,7 @@ parser.add_argument("-i", help='number of iteration in', default=15, type=int)
 parser.add_argument("-o", help='output file name', default="mandelbrot.png", type=check_file_picture_name)
 args = parser.parse_args()
 height_of_image = args.s[1] if args.s[1] > 0 else 500
-width_of_image = args.s[1] if args.s[1] > 0 else 500
+width_of_image = args.s[0] if args.s[0] > 0 else 500
 iteration = args.i if args.i > 0 else 15
 
 min_real = -2.1
