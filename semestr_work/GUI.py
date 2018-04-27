@@ -5,28 +5,38 @@ from Operations import App
 from PIL import ImageTk, Image
 
 class GUI:
-    def __init__(self, root):
-        self.root = root
+    def __init__(self):
+        #This creates the main window of an application
+        self.root = tk.Tk()
+        self.root.title("Semestr work")
+        self.create_menu_to_root()
         self.image = App()
         display_text = tk.StringVar()
-        self.label = tk.Label(root, height=4, width=30, font=40, textvariable=display_text)
+        self.label = tk.Label(self.root, height=4, width=30, font=40, textvariable=display_text)
         self.label.pack()
         display_text.set("Lets start...")
+        #Start the GUI
+        self.root.mainloop()
 
     def image_to_window(self):
+
+
         self.label.pack_forget()
         #Creates a Tkinter-compatible photo image, which can be used everywhere Tkinter expects an image object.
         img = ImageTk.PhotoImage(self.image.get_view())
-        #img = ImageTk.PhotoImage(Image.open("/home/ladislav/develop/BI-PYT/test.png"))
+        img = ImageTk.PhotoImage(Image.open("/home/ladislav/develop/BI-PYT/test.png"))
 
         #The Label widget is a standard Tkinter widget used to display a text or image on the screen.
-        panel = tk.Label(self.root, image = img)
-
+        self.panel = tk.Label(self.root, image = img)
+        self.panel.img = img
         #The Pack geometry manager packs widgets in rows or columns.
-        panel.pack(side = "right", fill = "both", expand = "yes")
-        #self.root.update()
-        self.root.mainloop()
+        self.panel.pack()
+        self.panel.pack()
 
+        #self.root.mainloop()
+
+        #self.root.update()
+    
     def load_file(self):
         dir_path = os.getcwd()
         self.root.filename =  tk.filedialog.askopenfilename(initialdir = dir_path,title = "Select file",filetypes = (("pictures","*.jpg *.png *.tiff *.bmp"),("all files","*.*")))
@@ -43,8 +53,8 @@ class GUI:
     def not_implement(self):
         print("This function is not implemet...")
 
-    def create_menu_to_root(self, root):
-        menu_bar = tk.Menu(root)
+    def create_menu_to_root(self):
+        menu_bar = tk.Menu(self.root)
 
         main_menu = tk.Menu(menu_bar, tearoff=0)
 
@@ -52,7 +62,7 @@ class GUI:
         main_menu.add_command(label="Save", command=self.not_implement, font=40)
         main_menu.add_command(label="Save as...", command=self.not_implement, font=40)
         main_menu.add_separator()
-        main_menu.add_command(label="Exit", command=root.quit, font=40)
+        main_menu.add_command(label="Exit", command=self.root.destroy, font=40)
         menu_bar.add_cascade(label="File", menu=main_menu, font=40)
 
 
@@ -78,4 +88,8 @@ class GUI:
         helpmenu = tk.Menu(menu_bar, tearoff=0)
         helpmenu.add_command(label="About...", command=self.about_dialog, font=40)
         menu_bar.add_cascade(label="Help", menu=helpmenu, font=40)
-        root.config(menu=menu_bar, background='black')
+        self.root.config(menu=menu_bar, background='black')
+
+
+
+gui = GUI()
