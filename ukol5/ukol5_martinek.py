@@ -16,7 +16,8 @@ class Cell_live:
         self.p('\x1b[?25l\x1b[2J\x1b[0H')
         self.write = False
         if file_save != 0:
-            self.to_save = open('save.txt', 'w')
+            self.to_save = open(file_save, 'w')
+            self.to_save.write(str(x) + " " + str(y) + "\n")
             self.write = True
 
 
@@ -28,6 +29,7 @@ class Cell_live:
     def print_state_on_terminal(self, generation_number):
         self.p('\x1b[?25l\x1b[2J\x1b[0H')
         self.p("Generation number = ", generation_number)
+        self.to_save.write("Generation number = " + str(generation_number) + "\n")
         x = 1
         y = 0
         for i in self.array[1:-1,1:-1]:
@@ -76,16 +78,68 @@ class Cell_live:
         if self.write: self.to_save.close()
 
 
+class Load():
+
+    def __init__(self,file):
+        self.f = open(file, 'r')
+        a,b = self.f.readline().split(" ")
+        self.rows = a
+        self.colums = b
+        #a = str(int(a)+1)
+        #b = str(int(b)+1)
+        sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=a, cols=b))
+        self.clean()
+
+    def __del__(self):
+        input("")
+        print('\033[?25h')
+
+    """Print for painting on terminal :D"""
+    def p(self, *args):
+        print(*args, end='', sep='', flush = True)
+
+    """Cleand terminal."""
+    def clean(self):
+        self.p('\x1b[?25l\x1b[2J\x1b[0H')
+
+    """Set position in terminal."""
+    def set_position(self, rows, cols):
+        self.p("\x1b[{row};{col}H".format(row=rows, col=cols))
+
+    """Start loading with speed."""
+    def start(self):
+        while True:
+            chunk = self.f.readline()
+            if chunk == '':
+                break
+            self.set_position(1,1)
+            self.p(chunk)
+            self.set_position(2,1)
+            for i in range(int(self.rows)-1):
+                chunk = self.f.readline()
+                for i in chunk[:-1]:
+                    if i == '0':
+                        self.p(" ")
+                    else:
+                        self.p(0)
+            sleep(1) 
+             
+
+
 
 parser=argparse.ArgumentParser("Cell live simulator")
 parser.add_argument("-p", type=int, help='Percent cels on start.', default=10)
-parser.add_argument("-o", type=int, help='How ofter print the situation.', required=True)
-parser.add_argument("-m", type=int, help='Maximum generations.', required=True)
+parser.add_argument("-o", type=int, help='How ofter print the situation.', default=1)
+parser.add_argument("-m", type=int, help='Maximum generations.', default=10)
 parser.add_argument("-f", help='File to save.')
+parser.add_argument("-l", help='File to load.')
 args = parser.parse_args()
 
-
-rows, columns = os.popen('stty size', 'r').read().split()
-live = Cell_live(int(rows),int(columns), int(args.p)/100,args.f if args.f else 0 )
-live.start_game(args.m, args.o)
+if args.l:
+    live = Load(args.l)
+    live.start()
+else:
+    rows, columns = os.popen('stty size', 'r').read().split()
+    live = Cell_live(int(rows),int(columns), int(args.p)/100,args.f if args.f else 0 )
+    live.start_game(args.m, args.o)
 
