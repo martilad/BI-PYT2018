@@ -79,7 +79,7 @@ class GUI:
         editmenu = tk.Menu(menu_bar, tearoff=0)
         editmenu.add_command(label="Undo", command=self.not_implement, font=40)
         editmenu.add_command(label="Reset", command=self.not_implement, font=40)
-        editmenu.add_command(label="Re-size", command=self.not_implement, font=40)
+        editmenu.add_command(label="Re-size (beta)", command=self.not_implement, font=40)
         editmenu.add_separator()
         editmenu.add_command(label="Rotate 90°C right", command= lambda: self.action_do(4), font=40)
         editmenu.add_command(label="Rotate 90°C left", command= lambda: self.action_do(5), font=40)
