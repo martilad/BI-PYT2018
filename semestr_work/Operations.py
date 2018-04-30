@@ -39,6 +39,12 @@ class Operations:
         self.push()
         self.image = self.image[:, ::-1]
         return True
+
+    def invert(self):
+        self.push()
+        self.image = 255 - self.image
+        return True
+
     def reset(self):
         self.push()
         self.image = np.asarray(self.image_origin)
