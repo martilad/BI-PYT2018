@@ -53,6 +53,15 @@ class Operations:
         self.image = np.stack((gray,)*3, -1).astype(np.uint8)
         return True
 
+    def dark(self):
+        self.push()
+        self.image = (self.image * 0.75).astype(np.uint8) # min is 0 the black screen
+        return True
+
+    def light(self):
+        self.push()
+        self.image = (self.image + (256 - self.image) * 0.25).astype(np.uint8) # never up the maximum 256 its down to int.
+        return True
 
     def reset(self):
         self.push()

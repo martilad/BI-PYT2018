@@ -55,6 +55,10 @@ class GUI:
                 message = self.image.invert()
             if number == 18: # greyscale
                 message = self.image.greyscale()
+            if number == 19: # darker image
+                message = self.image.dark()
+            if number == 20: # light image
+                message = self.image.light()
             if message != True:
                 messagebox.showinfo("Error", message)
             self.image_to_window()
