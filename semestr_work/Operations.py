@@ -1,89 +1,126 @@
 from PIL import Image
 import numpy as np
 import random
+MAX_VERTICAL_SIZE = 900
+MAX_HORIZONTAL_SIZE = 1900
+
 class Operations:
     def __init__(self):
         self.load = False
 
     def load_image(self, path):
         self.path = path
-        self.image_origin = Image.open(path)
+        try:
+            self.image_origin = Image.open(path)
+        except:
+            return "Bad file. No Image."
         self.image = np.asarray(self.image_origin)
         self.view = np.asarray(self.image_origin)
-        self.resize_img(2.0, 'x')
-        self.resize_img(2.0, 'y')
+        self.check_sizing_of_view()
+        return True
+
+    def save_image(self, path):
+        try:
+            out = Image.fromarray(self.image, 'RGB')#specifikace ukladani
+            out.save(path)
+            return True
+        except:
+            return "Bad file extension."
+
+    def check_sizing_of_view(self):
+        if len(self.view) > MAX_VERTICAL_SIZE:
+            percent = MAX_VERTICAL_SIZE/len(self.view)
+            self.view = self.resize_img(picture=self.view, percent=percent, axis='y')
+            self.view = self.resize_img(picture=self.view, percent=percent, axis='x')
+        if len(self.view[0]) > MAX_HORIZONTAL_SIZE:
+            percent = MAX_HORIZONTAL_SIZE/len(self.view[0])
+            self.view = self.resize_img(picture=self.view, percent=1900/percent, axis='y')
+            self.view = self.resize_img(picture=self.view, percent=1900/percent, axis='x')
 
     def get_view(self):
         #return self.image_origin
         return Image.fromarray(self.view, 'RGB')
 
-    def resize_img(self, percent, axis):
-        if axis == 'x':
+    def resize_img(self, picture, percent, axis):
+        if percent < 0:
+            return
+        if axis == 'y':
             if percent < 1:
-                self.downsize_x(percent)
+                return self.downsize_y(picture=picture, percent=percent)
             elif percent > 1:
-                self.upsize_x(percent)
-        elif axis == 'y':
+                while True:
+                    if percent > 2:
+                        picture = self.upsize_y(picture=picture, percent=2)
+                        percent = percent / 2
+                    else:
+                        return self.upsize_y(picture=picture, percent=percent)
+        elif axis == 'x':
             if percent < 1:
-                self.downsize_y(percent)
+                return self.downsize_x(picture=picture, percent=percent)
             elif percent > 1:
-                self.upsize_y(percent)
+                while True:
+                    if percent > 2:
+                        picture = self.upsize_x(picture=picture, percent=2)
+                        percent = percent / 2
+                    else:
+                        return self.upsize_x(picture=picture, percent=percent)
+                
 
-    def downsize_x(self, percent):
-        to_sur = random.sample(range(0, len(self.view)), int(len(self.view)*percent))
+    def downsize_y(self, picture, percent):
+        to_sur = random.sample(range(0, len(picture)), int(len(picture)*percent))
         to_sur.sort(key=int)
-        image = np.zeros((len(to_sur), len(self.view[0]), 3), dtype=np.uint8)
+        image = np.zeros((len(to_sur), len(picture[0]), 3), dtype=np.uint8)
         x = 0
         for i in to_sur:
-            image[x] = self.view[i]
+            image[x] = picture[i]
             x += 1
-        self.view = image
+        return image
 
-    def downsize_y(self, percent):
-        to_sur = random.sample(range(0, len(self.view[0])), int(len(self.view[0])*percent))
+    def downsize_x(self, picture, percent):
+        to_sur = random.sample(range(0, len(picture[0])), int(len(picture[0])*percent))
         to_sur.sort(key=int)
-        image = np.zeros((len(self.view), len(to_sur), 3), dtype=np.uint8)
+        image = np.zeros((len(picture), len(to_sur), 3), dtype=np.uint8)
         y = 0
         for i in to_sur:
-            image[:,y] = self.view[:,i]
+            image[:,y] = picture[:,i]
             y += 1
-        self.view = image
+        return image
 
-    def upsize_x(self, percent):
-        new_lines = int(len(self.view)*percent) - len(self.view)
-        to_add = random.sample(range(0, len(self.view)), new_lines) 
+    def upsize_y(self, picture, percent):
+        new_lines = int(len(picture)*percent) - len(picture)
+        to_add = random.sample(range(0, len(picture)), new_lines) 
         to_add.sort(key=int)
-        image = np.zeros((len(self.view) + new_lines, len(self.view[0]), 3), dtype=np.uint8)
+        image = np.zeros((len(picture) + new_lines, len(picture[0]), 3), dtype=np.uint8)
         n = 0
         i = 0
         while True:
-            if n == len(self.view):
+            if n == len(picture):
                 break
             if n in to_add:
-                image[i] = self.view[n]
+                image[i] = picture[n]
                 i += 1
-            image[i] = self.view[n]
+            image[i] = picture[n]
             n += 1
             i += 1
-        self.view = image
+        return image
 
-    def upsize_y(self, percent):
-        new_lines = int(len(self.view[0])*percent) - len(self.view[0])
-        to_add = random.sample(range(0, len(self.view[0])), new_lines) 
+    def upsize_x(self, picture, percent):
+        new_lines = int(len(picture[0])*percent) - len(picture[0])
+        to_add = random.sample(range(0, len(picture[0])), new_lines) 
         to_add.sort(key=int)
-        image = np.zeros((len(self.view), len(self.view[0]) + new_lines, 3), dtype=np.uint8)
+        image = np.zeros((len(picture), len(picture[0]) + new_lines, 3), dtype=np.uint8)
         n = 0
         i = 0
         while True:
-            if n == len(self.view[0]):
+            if n == len(picture[0]):
                 break
             if n in to_add:
-                image[:,i] = self.view[:,n]
+                image[:,i] = picture[:,n]
                 i += 1
-            image[:,i] = self.view[:,n]
+            image[:,i] = picture[:,n]
             n += 1
             i += 1
-        self.view = image
+        return image
 
 
 
