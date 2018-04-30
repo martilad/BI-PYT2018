@@ -13,6 +13,7 @@ class GUI:
         # This creates the main window of an application
         self.root = tk.Tk()
         self.root.title("Semestr work")
+        self.root.bind('<Control-z>', self.back)
         self.create_menu_to_root()
         self.image = Operations()
         display_text = tk.StringVar()
@@ -49,7 +50,11 @@ class GUI:
                 message = self.image.rotate_left()
             if message != True:
                 messagebox.showinfo("Error", message)
-            self.image_to_window() 
+            self.image_to_window()
+
+        """Back if is press ctrl-z"""
+    def back(self, event):
+        self.action_do(11)
 
         """Put image view from operation to window"""
     def image_to_window(self):
