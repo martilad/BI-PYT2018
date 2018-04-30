@@ -30,6 +30,15 @@ class Operations:
         self.stack = []
         return True
 
+    def mirror_y(self):
+        self.push()
+        self.image = self.image[::-1]
+        return True
+
+    def mirror_x(self):
+        self.push()
+        self.image = self.image[:, ::-1]
+        return True
     def reset(self):
         self.push()
         self.image = np.asarray(self.image_origin)

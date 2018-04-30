@@ -9,7 +9,6 @@ import os
 class GUI:
     def __init__(self):
         self.load = False
-
         # This creates the main window of an application
         self.root = tk.Tk()
         self.root.title("Semestr work")
@@ -48,6 +47,10 @@ class GUI:
                 message = self.image.rotate_right()
             if number == 14: # turn left
                 message = self.image.rotate_left()
+            if number == 15: # mirror X
+                message = self.image.mirror_x()
+            if number == 16: # mirror Y
+                message = self.image.mirror_y()
             if message != True:
                 messagebox.showinfo("Error", message)
             self.image_to_window()
@@ -141,14 +144,14 @@ class GUI:
         editmenu.add_command(label="Rotate 90°C right", command= lambda: self.action_do(13), font=40)
         editmenu.add_command(label="Rotate 90°C left", command= lambda: self.action_do(14), font=40)
         editmenu.add_separator()
-        editmenu.add_command(label="MirroringX", command=self.not_implement, font=40)
-        editmenu.add_command(label="MirroringY", command=self.not_implement, font=40)
-        editmenu.add_command(label="Inverse", command=self.not_implement, font=40)
+        editmenu.add_command(label="MirroringX", command= lambda: self.action_do(15), font=40)
+        editmenu.add_command(label="MirroringY", command= lambda: self.action_do(16), font=40)
+        editmenu.add_command(label="Inverte", command= lambda: self.action_do(17), font=40)
         editmenu.add_separator()
-        editmenu.add_command(label="Greyscale", command=self.not_implement, font=40)
-        editmenu.add_command(label="Dark", command=self.not_implement, font=40)
-        editmenu.add_command(label="Light", command=self.not_implement, font=40)
-        editmenu.add_command(label="Highlight", command=self.not_implement, font=40)
+        editmenu.add_command(label="Greyscale", command= lambda: self.action_do(18), font=40)
+        editmenu.add_command(label="Dark", command= lambda: self.action_do(19), font=40)
+        editmenu.add_command(label="Light", command= lambda: self.action_do(20), font=40)
+        editmenu.add_command(label="Highlight", command= lambda: self.action_do(21), font=40)
         menu_bar.add_cascade(label="Operation", menu=editmenu, font=40)
 
         helpmenu = tk.Menu(menu_bar, tearoff=0)
