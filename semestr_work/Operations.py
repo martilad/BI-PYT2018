@@ -45,6 +45,15 @@ class Operations:
         self.image = 255 - self.image
         return True
 
+
+    def greyscale(self):
+        self.push()
+        r, g, b = self.image[:,:,0], self.image[:,:,1], self.image[:,:,2]
+        gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
+        self.image = np.stack((gray,)*3, -1).astype(np.uint8)
+        return True
+
+
     def reset(self):
         self.push()
         self.image = np.asarray(self.image_origin)

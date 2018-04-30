@@ -53,6 +53,8 @@ class GUI:
                 message = self.image.mirror_y()
             if number == 17: # invert
                 message = self.image.invert()
+            if number == 18: # greyscale
+                message = self.image.greyscale()
             if message != True:
                 messagebox.showinfo("Error", message)
             self.image_to_window()
