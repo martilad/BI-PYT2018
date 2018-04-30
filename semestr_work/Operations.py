@@ -7,6 +7,18 @@ MAX_HORIZONTAL_SIZE = 1900
 class Operations:
     def __init__(self):
         self.load = False
+        self.stack = []
+
+    def push(self):
+        self.stack.append(np.copy(self.image))
+        if len(self.stack) > 50:
+            self.stack = self.stack[-50:]
+
+    def pop(self):
+        if len(self.stack) > 0:
+            self.image = self.stack.pop()
+            return True
+        return "No stack more levels."
 
     def load_image(self, path):
         self.path = path
@@ -15,8 +27,22 @@ class Operations:
         except:
             return "Bad file. No Image."
         self.image = np.asarray(self.image_origin)
-        self.view = np.asarray(self.image_origin)
-        self.check_sizing_of_view()
+        self.stack = []
+        return True
+
+    def reset(self):
+        self.push()
+        self.image = np.asarray(self.image_origin)
+        return True
+
+    def rotate_right(self):
+        self.push()
+        self.image = np.rot90(self.image, 3)
+        return True
+
+    def rotate_left(self):
+        self.push()
+        self.image = np.rot90(self.image)
         return True
 
     def save_image(self, path):
@@ -27,7 +53,8 @@ class Operations:
         except:
             return "Bad file extension."
 
-    def check_sizing_of_view(self):
+    def create_and_size_view_sizing_of_view(self):
+        self.view = np.copy(self.image)
         if len(self.view) > MAX_VERTICAL_SIZE:
             percent = MAX_VERTICAL_SIZE/len(self.view)
             self.view = self.resize_img(picture=self.view, percent=percent, axis='y')
@@ -38,7 +65,7 @@ class Operations:
             self.view = self.resize_img(picture=self.view, percent=1900/percent, axis='x')
 
     def get_view(self):
-        #return self.image_origin
+        self.create_and_size_view_sizing_of_view()
         return Image.fromarray(self.view, 'RGB')
 
     def resize_img(self, picture, percent, axis):

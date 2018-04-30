@@ -30,13 +30,26 @@ class GUI:
         # Start the GUI
         self.root.mainloop()
 
-
         """Not implement function"""
     def not_implement(self):
         print("This function is not implemet...")
 
     def action_do(self, number):
-        print(number)
+        message = True
+        if self.load:
+            if number == 10: # reset image
+                message = self.image.reset()
+            if number == 11: # undo 
+                message = self.image.pop()
+            if number == 12: # resize
+                message = self.image.reset()
+            if number == 13: # turn right
+                message = self.image.rotate_right()
+            if number == 14: # turn left
+                message = self.image.rotate_left()
+            if message != True:
+                messagebox.showinfo("Error", message)
+            self.image_to_window() 
 
         """Put image view from operation to window"""
     def image_to_window(self):
@@ -56,7 +69,6 @@ class GUI:
 
         """Save to existing file"""
     def save_image(self):
-        print(self.root.filename)
         if self.load:
             message = self.image.save_image(self.root.filename)
             # Handle message if fail save file
@@ -117,12 +129,12 @@ class GUI:
         menu_bar.add_cascade(label="File", menu=main_menu, font=40)
 
         editmenu = tk.Menu(menu_bar, tearoff=0)
-        editmenu.add_command(label="Undo", command=self.not_implement, font=40)
-        editmenu.add_command(label="Reset", command=self.not_implement, font=40)
+        editmenu.add_command(label="Undo", command= lambda: self.action_do(11), font=40)
+        editmenu.add_command(label="Reset", command= lambda: self.action_do(10), font=40)
         editmenu.add_command(label="Re-size (beta)", command=self.not_implement, font=40)
         editmenu.add_separator()
-        editmenu.add_command(label="Rotate 90°C right", command= lambda: self.action_do(4), font=40)
-        editmenu.add_command(label="Rotate 90°C left", command= lambda: self.action_do(5), font=40)
+        editmenu.add_command(label="Rotate 90°C right", command= lambda: self.action_do(13), font=40)
+        editmenu.add_command(label="Rotate 90°C left", command= lambda: self.action_do(14), font=40)
         editmenu.add_separator()
         editmenu.add_command(label="MirroringX", command=self.not_implement, font=40)
         editmenu.add_command(label="MirroringY", command=self.not_implement, font=40)
