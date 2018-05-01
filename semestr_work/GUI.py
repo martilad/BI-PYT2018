@@ -177,7 +177,7 @@ class GUI:
         menu_bar.add_cascade(label="File", menu=main_menu, font=40)
 
         editmenu = tk.Menu(menu_bar, tearoff=0)
-        editmenu.add_command(label="Undo", command= lambda: self.action_do(11), font=40)
+        editmenu.add_command(label="Undo (ctrl-z)", command= lambda: self.action_do(11), font=40)
         editmenu.add_command(label="Reset", command= lambda: self.action_do(10), font=40)
         editmenu.add_separator()
         editmenu.add_command(label="Re-size (beta)", command= lambda: self.action_do(40), font=40)
