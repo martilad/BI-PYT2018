@@ -45,6 +45,15 @@ class Operations:
         self.image = 255 - self.image
         return True
 
+    def highlight(self):
+        self.push()
+        tmp = np.copy(self.image).astype(np.int16)
+        count = (tmp[0:-2,0:-2,:] + tmp[0:-2,1:-1,:] + tmp[0:-2,2:,:] +      #first line
+                tmp[1:-1,0:-2,:] + tmp[1:-1,2:,:] +                           #secount without the point
+                tmp[2:,0:-2,:] + tmp[2:,1:-1,:] + tmp[2:,2:,:])    #third bottom last all like church in carcasone :D
+        tmp[1:-1,1:-1] = (9 * tmp[1:-1,1:-1]) - count
+        self.image = np.clip(tmp, 0, 255).astype(np.uint8)
+        return True
 
     def greyscale(self):
         self.push()

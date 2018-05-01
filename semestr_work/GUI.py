@@ -59,6 +59,8 @@ class GUI:
                 message = self.image.dark()
             if number == 20: # light image
                 message = self.image.light()
+            if number == 21: # highligh image
+                message = self.image.highlight()
             if message != True:
                 messagebox.showinfo("Error", message)
             self.image_to_window()
