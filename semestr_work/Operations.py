@@ -35,6 +35,16 @@ class Operations:
         self.image = self.image[::-1]
         return True
 
+    def mirroring_y(self):
+        self.push()
+        self.image = np.vstack((self.image,self.image[::-1]))
+        return True
+
+    def mirroring_x(self):
+        self.push()
+        self.image = np.hstack((self.image,self.image[:, ::-1]))
+        return True
+
     def mirror_x(self):
         self.push()
         self.image = self.image[:, ::-1]
@@ -43,6 +53,16 @@ class Operations:
     def invert(self):
         self.push()
         self.image = 255 - self.image
+        return True
+
+    def ironing(self):
+        self.push()
+        tmp = np.copy(self.image).astype(np.int16)
+        count = (tmp[0:-2,0:-2,:] + tmp[0:-2,1:-1,:] + tmp[0:-2,2:,:] +      #first line
+                tmp[1:-1,0:-2,:] + tmp[1:-1,2:,:] +                           #secount without the point
+                tmp[2:,0:-2,:] + tmp[2:,1:-1,:] + tmp[2:,2:,:])    #third bottom last all like church in carcasone :D
+        tmp[1:-1,1:-1] = (tmp[1:-1,1:-1] + count)/9
+        self.image = np.clip(tmp, 0, 255).astype(np.uint8)
         return True
 
     def highlight(self):
@@ -95,6 +115,14 @@ class Operations:
         except:
             return "Bad file extension."
 
+    def resizeX(self, percent):
+        self.image = self.resize_img(picture=self.image, percent=percent, axis='x')
+        return True
+
+    def resizeY(self, percent):
+        self.image = self.resize_img(picture=self.image, percent=percent, axis='y')
+        return True
+
     def create_and_size_view_sizing_of_view(self):
         self.view = np.copy(self.image)
         if len(self.view) > MAX_VERTICAL_SIZE:
@@ -103,8 +131,8 @@ class Operations:
             self.view = self.resize_img(picture=self.view, percent=percent, axis='x')
         if len(self.view[0]) > MAX_HORIZONTAL_SIZE:
             percent = MAX_HORIZONTAL_SIZE/len(self.view[0])
-            self.view = self.resize_img(picture=self.view, percent=1900/percent, axis='y')
-            self.view = self.resize_img(picture=self.view, percent=1900/percent, axis='x')
+            self.view = self.resize_img(picture=self.view, percent=percent, axis='y')
+            self.view = self.resize_img(picture=self.view, percent=percent, axis='x')
 
     def get_view(self):
         self.create_and_size_view_sizing_of_view()

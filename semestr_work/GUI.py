@@ -1,5 +1,6 @@
 from Operations import Operations
 from tkinter import filedialog
+from tkinter import simpledialog
 from tkinter import messagebox
 from PIL import ImageTk, Image
 import tkinter as tk
@@ -25,6 +26,11 @@ class GUI:
         # Create empty picture box
         self.panel = tk.Label(self.root, image = None)
         
+    def test(self, event):
+        print(event)
+        """"""
+
+
         """Start aplications"""
     def start(self):
         # Start the GUI
@@ -61,6 +67,26 @@ class GUI:
                 message = self.image.light()
             if number == 21: # highligh image
                 message = self.image.highlight()
+            if number == 22: # highligh image
+                message = self.image.mirroring_x()
+            if number == 23: # highligh image
+                message = self.image.mirroring_y()
+            if number == 24: # highligh image
+                message = self.image.ironing()
+            if number == 40: # resizing
+                answer = simpledialog.askinteger("Input resize", "Put percentage of image you want.", parent=self.root, minvalue=0, maxvalue=500)
+                if answer is not None:
+                    message = self.image.resizeY(answer/100)
+                    message = self.image.resizeX(answer/100)
+                else: message = True
+            if number == 41: # resizing X
+                answer = simpledialog.askinteger("Input resize", "Put percentage of image you want in direction X.?", parent=self.root, minvalue=0, maxvalue=500)
+                if answer is not None: message = self.image.resizeX(answer/100)
+                else: message = True
+            if number == 42: # resizing Y
+                answer = simpledialog.askinteger("Input resize", "Put percentage of image you want in direction Y.?", parent=self.root, minvalue=0, maxvalue=500)
+                if answer is not None: message = self.image.resizeY(answer/100)
+                else: message = True
             if message != True:
                 messagebox.showinfo("Error", message)
             self.image_to_window()
@@ -98,6 +124,8 @@ class GUI:
         message = ""
         dir_path = os.getcwd()
         self.root.filename =  tk.filedialog.asksaveasfilename(initialdir = dir_path,title = "Save file",filetypes = (("pictures","*.jpg *.png *.tiff *.bmp"),("all files","*.*")))
+        if self.root.filename == "" or self.root.filename == ():
+            return
         if self.load:
             message = self.image.save_image(self.root.filename)
             # Handle message if fail save file
@@ -111,6 +139,8 @@ class GUI:
     def load_file(self):
         dir_path = os.getcwd()
         self.root.filename =  tk.filedialog.askopenfilename(initialdir = dir_path,title = "Select file",filetypes = (("pictures","*.jpg *.png *.tiff *.bmp"),("all files","*.*")))
+        if self.root.filename == "" or self.root.filename == ():
+            return
         load = self.image.load_image(self.root.filename)
         # Handle message if fail load file
         if load != True:
@@ -149,19 +179,27 @@ class GUI:
         editmenu = tk.Menu(menu_bar, tearoff=0)
         editmenu.add_command(label="Undo", command= lambda: self.action_do(11), font=40)
         editmenu.add_command(label="Reset", command= lambda: self.action_do(10), font=40)
-        editmenu.add_command(label="Re-size (beta)", command=self.not_implement, font=40)
+        editmenu.add_separator()
+        editmenu.add_command(label="Re-size (beta)", command= lambda: self.action_do(40), font=40)
+        editmenu.add_command(label="Re-size X (beta)", command= lambda: self.action_do(41), font=40)
+        editmenu.add_command(label="Re-size Y (beta)", command= lambda: self.action_do(42), font=40)
         editmenu.add_separator()
         editmenu.add_command(label="Rotate 90°C right", command= lambda: self.action_do(13), font=40)
         editmenu.add_command(label="Rotate 90°C left", command= lambda: self.action_do(14), font=40)
         editmenu.add_separator()
         editmenu.add_command(label="MirroringX", command= lambda: self.action_do(15), font=40)
         editmenu.add_command(label="MirroringY", command= lambda: self.action_do(16), font=40)
-        editmenu.add_command(label="Inverte", command= lambda: self.action_do(17), font=40)
+        editmenu.add_command(label="MirroringXex", command= lambda: self.action_do(22), font=40)
+        editmenu.add_command(label="MirroringYex", command= lambda: self.action_do(23), font=40)
         editmenu.add_separator()
+        editmenu.add_command(label="Inverte", command= lambda: self.action_do(17), font=40)
         editmenu.add_command(label="Greyscale", command= lambda: self.action_do(18), font=40)
         editmenu.add_command(label="Dark", command= lambda: self.action_do(19), font=40)
         editmenu.add_command(label="Light", command= lambda: self.action_do(20), font=40)
         editmenu.add_command(label="Highlight", command= lambda: self.action_do(21), font=40)
+        editmenu.add_separator()
+        editmenu.add_command(label="Ironing", command= lambda: self.action_do(24), font=40)
+
         menu_bar.add_cascade(label="Operation", menu=editmenu, font=40)
 
         helpmenu = tk.Menu(menu_bar, tearoff=0)
